@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎃 3D Halloween Pumpkin Carving Experience</title>
+  <meta name="description" content="Interactive 3D Halloween Pumpkin Carving Web Experience. Carve your own 3D jack-o'-lantern, customize spooky candle flames, cast witch potions, and create Halloween greeting cards." />
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎃</text></svg>" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <!-- 3D WebGL Canvas Container -->
+  <div id="canvas-container"></div>
+
+  <!-- Atmospheric Spooky Cobwebs with Animated Spider -->
+  <div class="cobweb-overlay cobweb-left" aria-hidden="true">
+    <svg viewBox="0 0 160 160" class="cobweb-svg">
+      <path d="M0,0 L160,0 C120,40 120,40 80,80 C40,120 40,120 0,160 Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.2"/>
+      <path d="M0,40 Q40,40 40,0 M0,80 Q80,80 80,0 M0,120 Q120,120 120,0 M0,160 Q160,160 160,0" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <line x1="0" y1="0" x2="160" y2="160" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+      <line x1="0" y1="0" x2="160" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <line x1="0" y1="0" x2="80" y2="160" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    </svg>
+    <div id="hangingSpider" class="hanging-spider" title="Boo! Click me!">
+      <div class="spider-thread"></div>
+      <div class="spider-body">🕷️</div>
+    </div>
+  </div>
+
+  <div class="cobweb-overlay cobweb-right" aria-hidden="true">
+    <svg viewBox="0 0 160 160" class="cobweb-svg">
+      <path d="M160,0 L0,0 C40,40 40,40 80,80 C120,120 120,120 160,160 Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.2"/>
+      <path d="M160,40 Q120,40 120,0 M160,80 Q80,80 80,0 M160,120 Q40,120 40,0 M160,160 Q0,160 0,0" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+      <line x1="160" y1="0" x2="0" y2="160" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+      <line x1="160" y1="0" x2="0" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <line x1="160" y1="0" x2="80" y2="160" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <!-- Top Spooky Header -->
+  <header class="app-header">
+    <div class="logo-area">
+      <span class="logo-bat" aria-hidden="true">🦇</span>
+      <h1 class="logo-title">HALLOWEEN <span>✦ Pumpkin Workshop</span></h1>
+    </div>
+
+    <div class="header-actions">
+      <button id="trickOrTreatBtn" class="action-pill glow-orange" title="Trick or Treat?">
+        <span>🍬 Trick or Treat?</span>
+      </button>
+
+      <button id="awakenSoulBtn" class="action-pill glow-purple" title="Awaken the Pumpkin's Soul!">
+        <span>⚡ Awaken Soul</span>
+      </button>
+
+      <button id="photoBoothBtn" class="action-pill glow-green" title="Create Greeting Card & Photo">
+        <span>📸 Create Card</span>
+      </button>
+
+      <button id="soundToggleBtn" class="icon-circle-btn" title="Toggle Sound" aria-label="Toggle Sound">
+        <span class="icon">🔊</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Left Sidebar: Carving Tools -->
+  <aside class="sidebar-left glass-panel" aria-label="Carving Tools Panel">
+    <div class="section-title">
+      <span class="section-icon" aria-hidden="true">🔪</span>
+      <h2>Carving Tools</h2>
+    </div>
+
+    <!-- Mode Selector: Carve vs Orbit -->
+    <div class="mode-switch">
+      <button id="modeCarveBtn" class="mode-btn active" title="Draw to carve into the pumpkin shell">
+        <span>🔪 Carve Mode</span>
+      </button>
+      <button id="modeOrbitBtn" class="mode-btn" title="Rotate and inspect the pumpkin in 360°">
+        <span>🔄 Orbit</span>
+      </button>
+    </div>
+
+    <!-- Tool Selector Grid -->
+    <div class="tools-grid">
+      <button class="tool-btn active" data-tool="knife" title="Fine Knife: Clean, sharp, detailed incisions">
+        <span class="tool-icon">🗡️</span>
+        <span class="tool-label">Fine Knife</span>
+      </button>
+
+      <button class="tool-btn" data-tool="saw" title="Serrated Saw: Jagged, ferocious cuts">
+        <span class="tool-icon">🪚</span>
+        <span class="tool-label">Saw Blade</span>
+      </button>
+
+      <button class="tool-btn" data-tool="scoop" title="Broad Scoop: Carve large openings, eyes and mouths">
+        <span class="tool-icon">🥄</span>
+        <span class="tool-label">Broad Scoop</span>
+      </button>
+
+      <button class="tool-btn" data-tool="peel" title="Skin Scraper: Scrapes surface for a warm translucent flesh glow">
+        <span class="tool-icon">✨</span>
+        <span class="tool-label">Skin Peel</span>
+      </button>
+
+      <button class="tool-btn" data-tool="patch" title="Pumpkin Putty: Fills and repairs accidental cuts">
+        <span class="tool-icon">🩹</span>
+        <span class="tool-label">Pumpkin Putty</span>
+      </button>
+
+      <button class="tool-btn" data-tool="stencil" title="Stencil Stamp: Apply ready-made shapes with a single click">
+        <span class="tool-icon">🏷️</span>
+        <span class="tool-label">Stencil Stamp</span>
+      </button>
+    </div>
+
+    <!-- Brush Size Control -->
+    <div class="brush-slider-box">
+      <div class="slider-header">
+        <label for="brushSizeSlider">Cut Thickness:</label>
+        <span id="brushSizeVal">22px</span>
+      </div>
+      <input type="range" id="brushSizeSlider" aria-label="Cut Thickness" min="8" max="64" value="22" />
+    </div>
+
+    <!-- Undo & Clear Actions -->
+    <div class="history-actions">
+      <button id="undoBtn" class="action-btn" title="Undo last carving stroke">
+        <span>↶ Undo</span>
+      </button>
+      <button id="clearBtn" class="action-btn danger" title="Reset all carvings to blank pumpkin">
+        <span>🗑️ Reset</span>
+      </button>
+    </div>
+
+    <!-- Stencil Drawer Panel -->
+    <div id="stencilDrawer" class="stencil-drawer">
+      <div class="drawer-header">
+        <h3>Choose Stencil (Click Pumpkin)</h3>
+      </div>
+      <div id="stencilList" class="stencil-list"></div>
+    </div>
+  </aside>
+
+  <!-- Right Sidebar: Candle, Presets & Cauldron -->
+  <aside class="sidebar-right glass-panel" aria-label="Presets and Lighting Panel">
+    <!-- Presets -->
+    <div class="section-group">
+      <div class="section-title">
+        <span class="section-icon" aria-hidden="true">🎭</span>
+        <h2>Preset Faces</h2>
+      </div>
+      <label for="presetSelect" class="sr-only">Preset Faces</label>
+      <select id="presetSelect" aria-label="Choose a preset face" class="preset-dropdown"></select>
+    </div>
+
+    <!-- Candle Lighting -->
+    <div class="section-group">
+      <div class="section-title">
+        <span class="section-icon" aria-hidden="true">🕯️</span>
+        <h2>Candle & Flame</h2>
+      </div>
+      
+      <div class="flame-colors">
+        <button class="flame-btn active" data-flame="classic" style="--btn-color: #ff7700;" title="Classic Fire" aria-label="Classic Fire"></button>
+        <button class="flame-btn" data-flame="ghost" style="--btn-color: #00e5ff;" title="Ghost Cyan" aria-label="Ghost Cyan"></button>
+        <button class="flame-btn" data-flame="witch" style="--btn-color: #22c55e;" title="Witch's Green" aria-label="Witch's Green"></button>
+        <button class="flame-btn" data-flame="cursed" style="--btn-color: #a855f7;" title="Cursed Violet" aria-label="Cursed Violet"></button>
+        <button class="flame-btn" data-flame="blood" style="--btn-color: #ef4444;" title="Blood Moon Red" aria-label="Blood Moon Red"></button>
+      </div>
+
+      <button id="candleToggleBtn" class="candle-toggle active">
+        <span class="toggle-icon">🔥</span>
+        <span class="btn-label">Blow Out Candle</span>
+      </button>
+    </div>
+
+    <!-- Witch's Cauldron Potion Bar Mount -->
+    <div id="potionBarMount" class="section-group"></div>
+  </aside>
+
+  <!-- Bottom Interactive Helper Pill -->
+  <div class="bottom-helper-pill glass-panel">
+    <span>💡 <strong>Tip:</strong> <strong>Left-click & drag</strong> to carve. <strong>Right-click & drag</strong> or switch to Orbit mode to inspect in 360°!</span>
+  </div>
+
+  <!-- Mobile Bottom Navigation Dock -->
+  <nav class="mobile-nav glass-panel" aria-label="Mobile controls dock">
+    <button id="mobileToolsBtn" class="mobile-nav-btn active" title="Carving tools">
+      <span class="icon">🔪</span>
+      <span>Tools</span>
+    </button>
+    <button id="mobileStyleBtn" class="mobile-nav-btn" title="Presets, candle and potions">
+      <span class="icon">🎭</span>
+      <span>Magic</span>
+    </button>
+    <button id="mobileHideBtn" class="mobile-nav-btn" title="Hide panels to carve full screen">
+      <span class="icon">🎃</span>
+      <span>Full View</span>
+    </button>
+  </nav>
+
+  <!-- Trick or Treat Modal -->
+  <dialog id="trickOrTreatModal" class="trick-modal" aria-labelledby="trickModalHeading" closedby="any">
+    <div class="trick-modal-box glass-panel">
+      <button class="close-btn" id="closeTrickModal" aria-label="Close dialog">✕</button>
+      <div class="modal-banner-icon" aria-hidden="true">🎃</div>
+      <h2 id="trickModalHeading">TRICK OR TREAT?</h2>
+      <p>The graveyard gates have creaked open. Make your choice, brave mortal!</p>
+      
+      <div class="trick-choices">
+        <button id="chooseTreatBtn" class="trick-btn treat-btn">
+          <span class="btn-emoji" aria-hidden="true">🍬</span>
+          <strong>Treat!</strong>
+          <small>A delicious shower of 3D Halloween candies!</small>
+        </button>
+
+        <button id="chooseTrickBtn" class="trick-btn trick-surprise-btn">
+          <span class="btn-emoji" aria-hidden="true">👻</span>
+          <strong>Trick!</strong>
+          <small>A spooky, mischievous Halloween surprise...</small>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Animated Spooky Notification Banner -->
+  <div id="spookyBanner" class="spooky-banner" role="status" aria-live="polite">
+    <div class="banner-content glass-panel">
+      <div class="banner-title"></div>
+      <p class="banner-sub"></p>
+    </div>
+  </div>
+
+  <!-- Entry Script -->
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# 3D Halloween Pumpkin Carving Experience
+
+> An interactive 3D WebGL web application allowing users to carve jack-o'-lanterns in real-time, customize candle flame colors, cast witch spells, and export holiday greeting cards.
+
+## Application
+
+- [3D Pumpkin Carver App](http://localhost:5174/): Complete interactive 3D jack-o'-lantern carver, customizable candle lighting, cauldron potions, and photo booth greeting card generator.

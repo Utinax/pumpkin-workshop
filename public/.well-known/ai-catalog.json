@@ -1,0 +1,21 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Halloween Pumpkin Carver Studio",
+    "identifier": "did:web:localhost"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:halloween:carver:studio",
+      "displayName": "3D Halloween Pumpkin Carver Studio",
+      "type": "application/agent-card+json",
+      "url": "http://localhost:5174/",
+      "description": "Interactive 3D Jack-o'-lantern pumpkin carving application with real-time carving tools, customizable candle flames, cauldron potions, and photo booth exporter.",
+      "representativeQueries": [
+        "carve a 3d pumpkin",
+        "create a halloween jack-o-lantern",
+        "customize pumpkin candle flames"
+      ]
+    }
+  ]
+}
