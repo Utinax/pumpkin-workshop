@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { soundManager } from '../audio/SoundManager.js';
 
 export class PhotoBooth {
@@ -111,9 +112,28 @@ export class PhotoBooth {
 
   open() {
     soundManager.playMagicChime();
-    // Render the scene to capture
+
+    // 1. Save original camera aspect & viewport size
+    const originalAspect = this.camera.aspect;
+    const originalSize = new THREE.Vector2();
+    this.renderer.getSize(originalSize);
+
+    // 2. Temporarily set camera to clean 4:3 card aspect ratio (800x600)
+    // so the pumpkin is perfectly proportioned on both mobile & desktop
+    const cardW = 800;
+    const cardH = 600;
+    this.camera.aspect = cardW / cardH;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(cardW, cardH, false);
+
+    // 3. Render and capture pristine 4:3 card image
     this.renderer.render(this.scene, this.camera);
     this.capturedImage = this.renderer.domElement.toDataURL('image/png');
+
+    // 4. Immediately restore original camera & viewport size
+    this.camera.aspect = originalAspect;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(originalSize.x, originalSize.y, false);
 
     this.dialog.showModal();
     this.renderCard();
@@ -131,8 +151,23 @@ export class PhotoBooth {
       const w = this.canvas.width;
       const h = this.canvas.height;
 
-      // Draw background 3D capture
-      this.ctx.drawImage(img, 0, 0, w, h);
+      // Aspect-ratio cover calculation: guarantees zero squashing or stretching
+      const imgAspect = img.width / img.height;
+      const canvasAspect = w / h;
+      let sx = 0, sy = 0, sw = img.width, sh = img.height;
+
+      if (imgAspect > canvasAspect) {
+        // Image is wider than card -> crop left/right
+        sw = img.height * canvasAspect;
+        sx = (img.width - sw) * 0.5;
+      } else {
+        // Image is taller than card (portrait) -> crop top/bottom
+        sh = img.width / canvasAspect;
+        sy = (img.height - sh) * 0.5;
+      }
+
+      // Draw background 3D capture with correct aspect ratio
+      this.ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
 
       // Theme colors
       const themeColors = {
